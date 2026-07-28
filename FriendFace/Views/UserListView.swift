@@ -26,7 +26,7 @@ struct UserListView: View {
             }
             .navigationTitle("FriendFace")
             .navigationDestination(for: User.self) { user in
-                Text("Detail view for \(user.name)")
+                UserDetailView(user: user, allUsers: viewModel.users)
             }
             .task {
                 await viewModel.fetchUsers()

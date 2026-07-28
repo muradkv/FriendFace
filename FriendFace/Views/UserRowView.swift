@@ -30,19 +30,5 @@ struct UserRowView: View {
 }
 
 #Preview {
-    UserRowView(
-        user: User(
-            id: UUID(),
-            isActive: true,
-            name: "Aboba",
-            age: 12,
-            company: "Company",
-            email: "email",
-            address: "address",
-            about: "about",
-            registered: Date.now,
-            tags: ["tag"],
-            friends: [Friend(id: UUID(), name: "Friend")]
-        )
-    )
+    UserRowView(user: User.preview)
 }

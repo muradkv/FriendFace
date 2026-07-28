@@ -20,3 +20,19 @@ struct User: Codable, Identifiable, Hashable {
     let tags: [String]
     let friends: [Friend]
 }
+
+extension User {
+    static let preview = User(
+        id: UUID(),
+        isActive: true,
+        name: "John Doe",
+        age: 30,
+        company: "Apple",
+        email: "john.doe@apple.com",
+        address: "1 Infinite Loop, Cupertino, CA",
+        about: "iOS Developer and enthusiast.",
+        registered: Date(),
+        tags: ["swift", "swiftui", "ios"],
+        friends: [Friend(id: UUID(), name: "Jane Smith")]
+    )
+}
