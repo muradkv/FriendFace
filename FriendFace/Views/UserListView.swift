@@ -13,8 +13,21 @@ struct UserListView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if viewModel.isLoading {
+                if viewModel.isLoading && viewModel.users.isEmpty {
                     ProgressView("Loading users...")
+                } else if viewModel.users.isEmpty, let errorMessage = viewModel.errorMessage {
+                    ContentUnavailableView {
+                        Label("Failed to Load Data", systemImage: "wifi.slash")
+                    } description: {
+                        Text(errorMessage)
+                    } actions: {
+                        Button("Try Again") {
+                            Task {
+                                await viewModel.fetchUsers()
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
                 } else {
                     List(viewModel.users) { user in
                         NavigationLink(value: user) {
@@ -22,6 +35,9 @@ struct UserListView: View {
                         }
                     }
                     .listStyle(.plain)
+                    .refreshable {
+                        await viewModel.fetchUsers(force: true)
+                    }
                 }
             }
             .navigationTitle("FriendFace")
@@ -30,14 +46,6 @@ struct UserListView: View {
             }
             .task {
                 await viewModel.fetchUsers()
-            }
-            .alert("Error", isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { _ in viewModel.errorMessage = nil }
-            )) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text(viewModel.errorMessage ?? "Unknown error")
             }
         }
     }

@@ -20,8 +20,10 @@ final class UserListViewModel {
         self.networkService = networkService
     }
     
-    func fetchUsers() async {
-        guard users.isEmpty else { return }
+    func fetchUsers(force: Bool = false) async {
+        if !force {
+            guard users.isEmpty else { return }
+        }
         
         isLoading = true
         errorMessage = nil
