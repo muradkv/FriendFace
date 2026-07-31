@@ -47,6 +47,11 @@ struct UserListView: View {
             .task {
                 await viewModel.fetchUsers()
             }
+            .alert("Refresh Failed", isPresented: $viewModel.showRefreshErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(viewModel.errorMessage ?? "Unknown error")
+            }
         }
     }
 }

@@ -14,6 +14,18 @@ final class UserListViewModel {
     private(set) var isLoading = false
     var errorMessage: String?
     
+    var showRefreshErrorAlert: Bool {
+        get {
+            return errorMessage != nil && !users.isEmpty
+            
+        }
+        set {
+            if !newValue {
+                errorMessage = nil
+            }
+        }
+    }
+    
     private let networkService: NetworkService
     
     init(networkService: NetworkService = NetworkService()) {
