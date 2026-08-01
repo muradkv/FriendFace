@@ -29,7 +29,7 @@ struct UserListView: View {
                         .buttonStyle(.borderedProminent)
                     }
                 } else {
-                    List(viewModel.users) { user in
+                    List(viewModel.sortedUsers) { user in
                         NavigationLink(value: user) {
                             UserRowView(user: user)
                         }
@@ -51,6 +51,19 @@ struct UserListView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(viewModel.errorMessage ?? "Unknown error")
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Picker("Sort By", selection: $viewModel.selectedSortOption) {
+                            ForEach(UserListViewModel.SortOption.allCases) { option in
+                                Text(option.rawValue).tag(option)
+                            }
+                        }
+                    } label: {
+                        Label("Sort", systemImage: "arrow.up.arrow.down")
+                    }
+                }
             }
         }
     }

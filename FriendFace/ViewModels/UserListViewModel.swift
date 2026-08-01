@@ -14,6 +14,19 @@ final class UserListViewModel {
     private(set) var isLoading = false
     var errorMessage: String?
     
+    var selectedSortOption: SortOption = .name
+    
+    var sortedUsers: [User] {
+        switch selectedSortOption {
+        case .name:
+            return users.sorted { $0.name < $1.name }
+        case .company:
+            return users.sorted { $0.company < $1.company }
+        case .age:
+            return users.sorted { $0.age < $1.age }
+        }
+    }
+    
     var showRefreshErrorAlert: Bool {
         get {
             return errorMessage != nil && !users.isEmpty
@@ -47,5 +60,15 @@ final class UserListViewModel {
         }
         
         isLoading = false
+    }
+}
+
+extension UserListViewModel {
+    enum SortOption: String, CaseIterable, Identifiable {
+        case name = "Name"
+        case company = "Company"
+        case age = "Age"
+        
+        var id: Self { self }
     }
 }
