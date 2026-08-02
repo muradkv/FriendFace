@@ -29,7 +29,7 @@ struct UserListView: View {
                         .buttonStyle(.borderedProminent)
                     }
                 } else {
-                    List(viewModel.sortedUsers) { user in
+                    List(viewModel.displayedUsers) { user in
                         NavigationLink(value: user) {
                             UserRowView(user: user)
                         }
@@ -52,6 +52,7 @@ struct UserListView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "Unknown error")
             }
+            .searchable(text: $viewModel.searchText, prompt: "Search by name or company")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {

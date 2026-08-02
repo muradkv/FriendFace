@@ -14,17 +14,12 @@ final class UserListViewModel {
     private(set) var isLoading = false
     var errorMessage: String?
     
+    var searchText = ""
     var selectedSortOption: SortOption = .name
     
-    var sortedUsers: [User] {
-        switch selectedSortOption {
-        case .name:
-            return users.sorted { $0.name < $1.name }
-        case .company:
-            return users.sorted { $0.company < $1.company }
-        case .age:
-            return users.sorted { $0.age < $1.age }
-        }
+    var displayedUsers: [User] {
+        let filtered = filter(users, by: searchText)
+        return sort(filtered, by: selectedSortOption)
     }
     
     var showRefreshErrorAlert: Bool {
@@ -60,6 +55,25 @@ final class UserListViewModel {
         }
         
         isLoading = false
+    }
+    
+    private func filter(_ list: [User], by query: String) -> [User] {
+        guard !query.isEmpty else { return list }
+        return list.filter { user in
+            user.name.localizedCaseInsensitiveContains(query) ||
+            user.company.localizedCaseInsensitiveContains(query)
+        }
+    }
+    
+    private func sort(_ list: [User], by option: SortOption) -> [User] {
+        switch option {
+        case .name:
+            return list.sorted { $0.name < $1.name }
+        case .company:
+            return list.sorted { $0.company < $1.company }
+        case .age:
+            return list.sorted { $0.age < $1.age }
+        }
     }
 }
 
