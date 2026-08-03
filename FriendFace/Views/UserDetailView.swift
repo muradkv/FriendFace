@@ -47,7 +47,7 @@ struct UserDetailView: View {
             Section("Tags") {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(user.tags, id: \.self) { tag in
+                        ForEach(user.uniqueTags, id: \.self) { tag in
                             Text("#\(tag)")
                                 .font(.caption)
                                 .padding(.horizontal, 10)

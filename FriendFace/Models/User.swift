@@ -35,4 +35,9 @@ extension User {
         tags: ["swift", "swiftui", "ios"],
         friends: [Friend(id: UUID(), name: "Jane Smith")]
     )
+    
+    var uniqueTags: [String] {
+        var seen = Set<String>()
+        return tags.filter { seen.insert($0).inserted }
+    }
 }
