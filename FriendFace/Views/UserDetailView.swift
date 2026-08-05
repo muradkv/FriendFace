@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct UserDetailView: View {
-    let user: User
-    let allUsers: [User]
+    @State private var viewModel: UserDetailViewModel
+    
+    init(user: User, allUsers: [User]) {
+        _viewModel = State(wrappedValue: UserDetailViewModel(user: user, allUsers: allUsers))
+    }
     
     var body: some View {
         List {
@@ -17,37 +20,37 @@ struct UserDetailView: View {
                 HStack {
                     Text("Status")
                     Spacer()
-                    Text(user.isActive ? "Active" : "Inactive")
-                        .foregroundStyle(user.isActive ? .green : .secondary)
+                    Text(viewModel.statusText)
+                        .foregroundStyle(viewModel.user.isActive ? .green : .secondary)
                 }
                 
                 HStack {
                     Text("Age")
                     Spacer()
-                    Text("\(user.age) years old")
+                    Text(viewModel.formattedAge)
                 }
                 
                 HStack {
                     Text("Registered")
                     Spacer()
-                    Text(user.registered.formatted(date: .abbreviated, time: .omitted))
+                    Text(viewModel.formattedRegistrationDate)
                 }
             }
             
             Section("Contact Information") {
-                Text("Email: \(user.email)")
-                Text("Address: \(user.address)")
-                Text("Company: \(user.company)")
+                Text("Email: \(viewModel.user.email)")
+                Text("Address: \(viewModel.user.address)")
+                Text("Company: \(viewModel.user.company)")
             }
             
             Section("About") {
-                Text(user.about)
+                Text(viewModel.user.about)
             }
             
             Section("Tags") {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(user.uniqueTags, id: \.self) { tag in
+                        ForEach(viewModel.tags, id: \.self) { tag in
                             Text("#\(tag)")
                                 .font(.caption)
                                 .padding(.horizontal, 10)
@@ -60,8 +63,8 @@ struct UserDetailView: View {
             }
             
             Section("Friends") {
-                ForEach(user.friends) { friend in
-                    if let matchedUser = allUsers.first(where: { $0.id == friend.id }) {
+                ForEach(viewModel.user.friends) { friend in
+                    if let matchedUser = viewModel.matchedUser(for: friend) {
                         NavigationLink(value: matchedUser) {
                             Text(friend.name)
                         }
@@ -72,7 +75,7 @@ struct UserDetailView: View {
                 }
             }
         }
-        .navigationTitle(user.name)
+        .navigationTitle(viewModel.user.name)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
