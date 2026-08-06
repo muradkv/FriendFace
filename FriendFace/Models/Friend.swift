@@ -2,12 +2,12 @@
 //  Friend.swift
 //  FriendFace
 //
-//  Created by murad on 24.07.2026.
+//  Created by murad on 06.08.2026.
 //
 
 import Foundation
 
-struct Friend: Codable, Identifiable, Hashable {
+struct Friend: Identifiable, Hashable {
     let id: UUID
     let name: String
 }

@@ -16,7 +16,7 @@ enum NetworkError: Error {
 struct NetworkService {
     private let baseURL = "https://www.hackingwithswift.com/samples"
     
-    func fetchUsers() async throws -> [User] {        
+    func fetchUsers() async throws -> [User] {
         guard let url = URL(string: "\(baseURL)/friendface.json") else {
             throw NetworkError.invalidURL
         }
@@ -31,7 +31,8 @@ struct NetworkService {
         decoder.dateDecodingStrategy = .iso8601
         
         do {
-            return try decoder.decode([User].self, from: data)
+            let userDTOs = try decoder.decode([UserDTO].self, from: data)
+            return userDTOs.map { $0.toDomain() }
         } catch {
             throw NetworkError.decodingError
         }

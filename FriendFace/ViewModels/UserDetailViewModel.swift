@@ -31,7 +31,7 @@ final class UserDetailViewModel {
     }
     
     var tags: [String] {
-        user.uniqueTags
+        user.tags
     }
     
     

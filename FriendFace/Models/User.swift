@@ -2,12 +2,12 @@
 //  User.swift
 //  FriendFace
 //
-//  Created by murad on 24.07.2026.
+//  Created by murad on 06.08.2026.
 //
 
 import Foundation
 
-struct User: Codable, Identifiable, Hashable {
+struct User: Identifiable, Hashable {
     let id: UUID
     let isActive: Bool
     let name: String
@@ -17,7 +17,7 @@ struct User: Codable, Identifiable, Hashable {
     let address: String
     let about: String
     let registered: Date
-    let tags: [String]
+    let tags: [String] 
     let friends: [Friend]
 }
 
@@ -35,9 +35,4 @@ extension User {
         tags: ["swift", "swiftui", "ios"],
         friends: [Friend(id: UUID(), name: "Jane Smith")]
     )
-    
-    var uniqueTags: [String] {
-        var seen = Set<String>()
-        return tags.filter { seen.insert($0).inserted }
-    }
 }
