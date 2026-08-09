@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 @Observable
 @MainActor
@@ -35,12 +36,21 @@ final class UserListViewModel {
     }
     
     private let networkService: NetworkService
+    private var modelContext: ModelContext?
     
     init(networkService: NetworkService = NetworkService()) {
         self.networkService = networkService
     }
     
+    func setModelContext(_ context: ModelContext) {
+        self.modelContext = context
+    }
+    
     func fetchUsers(force: Bool = false) async {
+        guard let context = modelContext else { return }
+        
+        fetchUsersFromDatabase(context: context)
+        
         if !force {
             guard users.isEmpty else { return }
         }
@@ -50,11 +60,30 @@ final class UserListViewModel {
         
         do {
             users = try await networkService.fetchUsers()
+            
+            if force {
+                try context.delete(model: User.self)
+            }
+            
+            for user in users {
+                context.insert(user)
+            }
+            
+            fetchUsersFromDatabase(context: context)
         } catch {
             errorMessage = "Failed to load users: \(error.localizedDescription)"
         }
         
         isLoading = false
+    }
+    
+    private func fetchUsersFromDatabase(context: ModelContext) {
+        let descriptor = FetchDescriptor<User>()
+        do {
+            self.users = try context.fetch(descriptor)
+        } catch {
+            print("Failed to fetch users from SwiftData: \(error)")
+        }
     }
     
     private func filter(_ list: [User], by query: String) -> [User] {
