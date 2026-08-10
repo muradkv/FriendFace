@@ -63,11 +63,14 @@ final class UserListViewModel {
             
             if force {
                 try context.delete(model: User.self)
+                try context.save()
             }
             
             for user in users {
                 context.insert(user)
             }
+            
+            try context.save()
             
             fetchUsersFromDatabase(context: context)
         } catch {

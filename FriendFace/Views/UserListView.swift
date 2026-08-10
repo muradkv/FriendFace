@@ -9,6 +9,7 @@ import SwiftUI
 
 struct UserListView: View {
     @State private var viewModel = UserListViewModel()
+    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         NavigationStack {
@@ -45,6 +46,7 @@ struct UserListView: View {
                 UserDetailView(user: user, allUsers: viewModel.users)
             }
             .task {
+                viewModel.setModelContext(modelContext)
                 await viewModel.fetchUsers()
             }
             .alert("Refresh Failed", isPresented: $viewModel.showRefreshErrorAlert) {
@@ -72,4 +74,5 @@ struct UserListView: View {
 
 #Preview {
     UserListView()
+        .modelContainer(for: User.self, inMemory: true)
 }
